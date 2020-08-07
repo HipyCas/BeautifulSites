@@ -36,3 +36,7 @@ class Page:
     def refresh(self):
         self.request = get(self.url)
         self.soup = BeautifulSoup(self.request.content, 'html.parser')
+
+    def set_meta(self, **kwargs):
+        for key, value in kwargs.items():
+            exec(f'self.{key} = {value}')
