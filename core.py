@@ -1,5 +1,19 @@
+import abc
 from requests import get
 from bs4 import BeautifulSoup
+
+
+class PageInterface(metaclass=abc.ABCMeta):
+
+    @classmethod
+    def __subclasshook_(cls, subclass):
+        return (hasattr(subclass, 'result_list') and
+                callable(subclass.result_list))
+
+    @abc.abstractmethod
+    def result_list(self) -> tuple:
+        """ Return the result of the parsing as a list (tuple) """
+        raise NotImplementedError
 
 
 class Page:
