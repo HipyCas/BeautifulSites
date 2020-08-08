@@ -8,7 +8,10 @@ class SearchResult:
         self.page = page
         self.link = link
 
+    #TODO: More attr? Methods?
 
+
+# TODO: Solve Google data parsing, look at Bing's
 """
 class GoogleSearch:
     web_search_URL = 'https://www.google.com/search'

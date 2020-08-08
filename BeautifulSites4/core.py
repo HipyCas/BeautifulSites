@@ -40,3 +40,5 @@ class Page:
     def set_meta(self, **kwargs):
         for key, value in kwargs.items():
             exec(f'self.{key} = "{value}"')
+
+# TODO: Result class?
