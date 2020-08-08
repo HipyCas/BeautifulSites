@@ -8,7 +8,7 @@ class SearchResult:
         self.page = page
         self.link = link
 
-    #TODO: More attr? Methods?
+    # TODO: More attr? Methods?
 
 
 # TODO: Solve Google data parsing, look at Bing's
@@ -39,7 +39,7 @@ class GoogleSearch:
 class BingSearch(Page, PageInterface):
     baseURL = 'https://www.bing.com/search'
 
-    def __init__(self, query: str, **params: str):
+    def __init__(self, query: str, **params):
         params.update(q=query)
         super().__init__(self.baseURL, **params)
         self.set_meta(title=self.soup.find('title').get_text())
@@ -63,10 +63,41 @@ class BingSearch(Page, PageInterface):
         # Extract links
         links = [link.get_text() for link in self.soup.find_all('div', class_='b_attribution')]
 
-        # Generate SearchResult list
+        # Generate results (SearchResult list)
         results = []
         for i in range(len(titles)):
             results.append(SearchResult(title=titles[i], description=descriptions[i], page=None, link=links[i]))
 
-        # Return result list as tuple
+        # Return results as tuple
+        return tuple(results)
+
+
+class YahooSearch(Page, PageInterface):
+
+    baseURL = 'https://search.yahoo.com/search'
+
+    def __init__(self, query: str, **params):
+        params.update(q=query)
+        super().__init__(self.baseURL, **params)
+        self.set_meta(title=self.soup.find('title'))
+
+    def result_list(self) -> tuple:
+        # Extract titles
+        titles = [title.get_text() for title in self.soup.find_all('a', class_='ac-algo fz-l ac-21th lh-24')]
+
+        # Extract description
+        descriptions = [description.get_text() for description in self.soup.find_all('p', class_='fz-ms lh-1_43x')]
+
+        # Extract pages
+        pages = [page.get_text() for page in self.soup.find_all('span', class_='fz-ms fw-m fc-12th wr-bw lh-17')]
+
+        # Extract links
+        links = [link['href'] for link in self.soup.find_all('a', class_='ac-algo fz-l ac-21th lh-24')]
+
+        # Generate results (SearchResult list)
+        results = []
+        for i in range(len(titles)):
+            results.append(SearchResult(title=titles[i], description=descriptions[i], page=pages[i], link=links[i]))
+
+        # Return results as tuple
         return tuple(results)
