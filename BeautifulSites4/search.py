@@ -72,6 +72,33 @@ class BingSearch(Page, PageInterface):
         return tuple(results)
 
 
+class EcosiaSearch(Page, PageInterface)
+    baseURL = 'https://www.ecosia.org/search'
+
+    def __init__(self, query: str, **params):
+        params.update(q=query)
+        super().__init__(self.baseURL, **params)
+        self.set_meta(title=self.soup.find('title').get_text())
+
+    def result_list(self):
+        # Extract titles
+        titles = []
+
+        # Extract links
+        links = [link.get_text() for link in self.soup.find_all('div', class_='b_attribution')]
+
+        # Extract descriptions
+        descriptions = [list(description.children)[1].get_text() for description in self.soup.find_all('div', class_='b_caption')]
+
+        # Generate results (SearchResult list)
+        results = []
+        for i in range(len(links)):
+            results.append(SearchResult(title='lol', description=descriptions[i], page=None, link=links[i]))
+
+        # Return results as tuple
+        return tuple(results)
+
+    
 class YahooSearch(Page, PageInterface):
 
     baseURL = 'https://search.yahoo.com/search'
