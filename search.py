@@ -43,35 +43,26 @@ class BingSearch(Page, PageInterface):
     
     def result_list(self):
         # Extract titles
-        print('> Extracting titles')
         titles = []
         for serp in range(5090, 5220):  # search for all titles
             t = self.soup.find('a', h=f'ID=SERP,{serp}.1')
             if t:
-                print(f'Extracted {t.get_text()}')
                 titles.append(t.get_text())
-        while 'Traducir esta página' in titles or 'Translate this page' in titles:# or 'https://' in titles or 'http://':  # clear unwanted titles
-            print(f'-- Still have got https/http or translate in {titles} --')
+        while 'Traducir esta página' in titles or 'Translate this page' in titles or 'https://' in titles or 'http://' in titles:  # clear unwanted titles
             for i in range(len(titles)):
                 if titles[i] == 'Traducir esta página' or titles[i] == 'Translate this page' or 'https://' in titles[i] or 'http://' in titles[i]:
-                    print(f'! Found https/http or translate int {titles[i]}')
                     del titles[i]
-                    print(f'cleaned, now titles are {titles}')
                     break
 
         # Extract descriptions
-        print('> Extracting descriptions')
         descriptions = [list(description.children)[1].get_text() for description in self.soup.find_all('div', class_='b_caption')]
 
         # Extract links
-        print('> Extracting links')
         links = [link.get_text() for link in self.soup.find_all('div', class_='b_attribution')]
 
         # Generate SearchResult list
-        print('> Generating results')
         results = []
         for i in range(len(titles)):
-            print(f'Creating result #{i}: {titles[i]} / {descriptions[i]} / {links[i]}')
             results.append(SearchResult(title=titles[i], description=descriptions[i], page=None, link=links[i]))
 
         # Return result list as tuple
