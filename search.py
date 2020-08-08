@@ -1,5 +1,4 @@
-from requests import get
-from bs4 import BeautifulSoup
+from core import *
 
 
 class SearchResult:
@@ -32,3 +31,31 @@ class GoogleSearch:
             link = link
             results.append(SearchResult(title.get_text(), description, page.get_text(), list(link.children)[]))
 """
+
+
+class BingSearch(Page, PageInterface):
+    baseURL = 'https://www.bing.com/search'
+
+    def __init__(self, query: str, **params: str):
+        params.update(q=query)
+        super().__init__(self.baseURL, **params)
+        self.set_meta(title=self.soup.find('title').get_text())
+    
+    def result_list(self):
+        titles = []
+        for serp in range(5090, 5220):
+            t = self.soup.find('a', h=f'ID=SERP,{serp}.1')
+            if t:
+                titles.append(t)
+        while 'Traducir esta página' in titles or 'Translate this page' in titles:
+            for i in range(len(titles)):
+                if titles[i] == 'Traducir esta página' or titles[i] == 'Translate this page':
+                    del titles[i]
+                    break
+
+        results = []
+        i = 0
+        for description, link in self.soup.find_all('div', class_='b_caption'), self.soup.find_all('div', class_='b_attribution'):
+            results.append(SearchResult(title=titles[0], description=list(description.children)[1].get_text(), page=None, link=link.get_text()))
+
+        return tuple(results)
