@@ -1,4 +1,4 @@
-from core import *
+from BeautifulSites4.core import *
 
 
 class SearchResult:
