@@ -21,7 +21,7 @@ class Page:
     def __init__(self, url: str, **kwargs: (str, str)):
         if kwargs:
             params = '?'
-            for key, value in kwargs:
+            for key, value in kwargs.items():
                 if list(kwargs.items())[-1][0] == key:
                     params += f'{key}={value}'
                 else:
@@ -39,4 +39,4 @@ class Page:
 
     def set_meta(self, **kwargs):
         for key, value in kwargs.items():
-            exec(f'self.{key} = {value}')
+            exec(f'self.{key} = "{value}"')
