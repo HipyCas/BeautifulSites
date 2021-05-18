@@ -1,5 +1,6 @@
 import abc
-from requests import get
+from requests import get 
+from requests.models import Response
 from bs4 import BeautifulSoup
 from typing import Union, Tuple, List
 
@@ -19,7 +20,7 @@ class PageInterface(metaclass=abc.ABCMeta):
 
 class Page:
 
-    def __init__(self, url: str, **kwargs: Union[Tuple[str, str], List[str, str]]):
+    def __init__(self, url: str, **kwargs):
         if kwargs:
             params = '?'
             for key, value in kwargs.items():
@@ -30,15 +31,16 @@ class Page:
             url += params
         if not ('https://' in url or 'http://' in url):
             url = f'https://{url}'
-        self.url = url
-        self.request = get(url)
-        self.soup = BeautifulSoup(self.request.content, 'html.parser')
+        self.url: str = url
+        self.request: Response = get(url)
+        self.soup: BeautifulSoup = BeautifulSoup(self.request.content, 'html.parser')
 
     def refresh(self):
         self.request = get(self.url)
         self.soup = BeautifulSoup(self.request.content, 'html.parser')
 
     def set_meta(self, **kwargs):
+        #? Why does this even exist? Or at least, why do I use it for setting the title?
         for key, value in kwargs.items():
             exec(f'self.{key} = "{value}"')
 
