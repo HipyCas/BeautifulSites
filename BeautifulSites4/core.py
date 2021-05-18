@@ -1,6 +1,7 @@
 import abc
 from requests import get
 from bs4 import BeautifulSoup
+from typing import Union, Tuple, List
 
 
 class PageInterface(metaclass=abc.ABCMeta):
@@ -18,7 +19,7 @@ class PageInterface(metaclass=abc.ABCMeta):
 
 class Page:
 
-    def __init__(self, url: str, **kwargs: (str, str)):
+    def __init__(self, url: str, **kwargs: Union[Tuple[str, str], List[str, str]]):
         if kwargs:
             params = '?'
             for key, value in kwargs.items():

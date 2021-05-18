@@ -72,7 +72,7 @@ class BingSearch(Page, PageInterface):
         return tuple(results)
 
 
-class EcosiaSearch(Page, PageInterface)
+class EcosiaSearch(Page, PageInterface):
     baseURL = 'https://www.ecosia.org/search'
 
     def __init__(self, query: str, **params):
